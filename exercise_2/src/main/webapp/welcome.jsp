@@ -1,32 +1,32 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-	pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%-- Trang chào chỉ hiển thị sau khi servlet xác nhận session đã đăng nhập. --%>
+<c:url var="welcomeUrl" value="/welcome"/>
+<c:url var="welcomeCssUrl" value="/css/welcome.css"/>
+<c:url var="welcomeVideoUrl" value="/video/background.mp4"/>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="./css/welcome.css">
-<title>Welcome</title>
-<script src="https://code.jquery.com/jquery-3.6.0.js"
-	integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-	crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="${welcomeCssUrl}">
+    <title>Chào mừng</title>
 </head>
 <body>
-	<div class="main">
-		<video autoplay loop id="video" plays-inline>
-			<source src="./video/background.mp4" type="video/mp4">
-		</video>
-		<div class="overlay"></div>
-		<div class="heading">
-			<h1 class="head">
-				WELCOME TO OUR <span>WEBSITE</span>
-			</h1>
-			<h3 class="sub">Lorem ipsum dolor sit amet</h3>
-			<form action="" method="post">
-				<div class="btns">
-					<a href="javascript:$('form').submit()">Logout</a>
-				</div>
-			</form>
-		</div>
-	</div>
+    <main class="main">
+        <video autoplay muted loop playsinline id="video" aria-hidden="true">
+            <source src="${welcomeVideoUrl}" type="video/mp4">
+        </video>
+        <div class="overlay"></div>
+        <div class="heading">
+            <h1 class="head">CHÀO MỪNG ĐẾN <span>TRANG WEB</span></h1>
+            <p class="sub">Bạn đã đăng nhập thành công</p>
+            <form action="${welcomeUrl}" method="post">
+                <div class="btns">
+                    <button type="submit">Đăng xuất</button>
+                </div>
+            </form>
+        </div>
+    </main>
 </body>
 </html>
