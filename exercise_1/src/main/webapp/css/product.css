@@ -1,52 +1,54 @@
-@charset "utf-8";
+@charset "UTF-8";
+
+/* Màn hình nhập sản phẩm và xem danh sách trong cùng một khung responsive. */
+* {
+    box-sizing: border-box;
+}
 
 html {
-    height: 100%;
+    min-height: 100%;
 }
 
 body {
+    min-height: 100vh;
     margin: 0;
-    padding: 0;
+    padding: 24px;
     font-family: sans-serif;
     background: linear-gradient(#141e30, #243b55);
 }
 
 .product-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 800px;
-    padding: 40px;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, .5);
-    box-sizing: border-box;
-    box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
+    width: min(100%, 820px);
+    margin: auto;
+    padding: clamp(24px, 5vw, 40px);
     border-radius: 10px;
+    color: #fff;
+    background: rgb(0 0 0 / 50%);
+    box-shadow: 0 15px 25px rgb(0 0 0 / 60%);
 }
 
 .product-box h1 {
     margin: 0 0 30px;
-    padding: 0;
-    color: #fff;
 }
 
 .product-box form {
-	width: 400px;
+    width: min(100%, 420px);
 }
 
+/* Nhãn thu nhỏ và di chuyển lên trên khi ô có dữ liệu hoặc đang được chọn. */
 .product-box .user-box {
     position: relative;
 }
 
 .product-box .user-box input {
     width: 100%;
-    padding: 10px 0;
-    font-size: 16px;
-    color: #fff;
     margin-bottom: 30px;
-    border: none;
+    border: 0;
     border-bottom: 1px solid #fff;
-    outline: none;
+    padding: 10px 0;
+    outline: 0;
+    font-size: 1rem;
+    color: #fff;
     background: transparent;
 }
 
@@ -55,131 +57,40 @@ body {
     top: 0;
     left: 0;
     padding: 10px 0;
-    font-size: 16px;
-    color: #fff;
     pointer-events: none;
-    transition: .5s;
+    transition: 0.25s;
 }
 
-.product-box .user-box input:focus~label,
-.product-box .user-box input:valid~label {
+.product-box .user-box input:focus ~ label,
+.product-box .user-box input:valid ~ label {
     top: -20px;
-    left: 0;
-    color: #03e9f4;
-    font-size: 12px;
+    color: #67e8f9;
+    font-size: 0.75rem;
 }
 
-.product-box form a {
-    position: relative;
-    display: inline-block;
+.action-button {
+    margin: 6px 0 28px;
+    border: 1px solid #03e9f4;
+    border-radius: 5px;
     padding: 10px 20px;
     color: #03e9f4;
-    font-size: 16px;
-    text-decoration: none;
+    background: transparent;
     text-transform: uppercase;
-    overflow: hidden;
-    transition: .5s;
-    margin-top: 30px;
-    margin-bottom: 70px;
-    letter-spacing: 4px
+    letter-spacing: 2px;
 }
 
-.product-box a:hover {
+.action-button:hover,
+.action-button:focus-visible {
+    color: #09202d;
     background: #03e9f4;
-    color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 5px #03e9f4, 0 0 25px #03e9f4, 0 0 50px #03e9f4, 0 0 100px #03e9f4;
-}
-
-.product-box a span {
-    position: absolute;
-    display: block;
-}
-
-.product-box a span:nth-child(1) {
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #03e9f4);
-    animation: btn-anim1 1s linear infinite;
-}
-
-@keyframes btn-anim1 {
-    0% {
-        left: -100%;
-    }
-
-    50%,
-    100% {
-        left: 100%;
-    }
-}
-
-.product-box a span:nth-child(2) {
-    top: -100%;
-    right: 0;
-    width: 2px;
-    height: 100%;
-    background: linear-gradient(180deg, transparent, #03e9f4);
-    animation: btn-anim2 1s linear infinite;
-    animation-delay: .25s
-}
-
-@keyframes btn-anim2 {
-    0% {
-        top: -100%;
-    }
-
-    50%,
-    100% {
-        top: 100%;
-    }
-}
-
-.product-box a span:nth-child(3) {
-    bottom: 0;
-    right: -100%;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(270deg, transparent, #03e9f4);
-    animation: btn-anim3 1s linear infinite;
-    animation-delay: .5s
-}
-
-@keyframes btn-anim3 {
-    0% {
-        right: -100%;
-    }
-
-    50%,
-    100% {
-        right: 100%;
-    }
-}
-
-.product-box a span:nth-child(4) {
-    bottom: -100%;
-    left: 0;
-    width: 2px;
-    height: 100%;
-    background: linear-gradient(360deg, transparent, #03e9f4);
-    animation: btn-anim4 1s linear infinite;
-    animation-delay: .75s
-}
-
-@keyframes btn-anim4 {
-    0% {
-        bottom: -100%;
-    }
-
-    50%,
-    100% {
-        bottom: 100%;
-    }
+    cursor: pointer;
 }
 
 .scrollbar {
-    max-height: 200px;
+    max-height: 260px;
     overflow: auto;
+}
+
+.form-error {
+    color: #fecaca;
 }

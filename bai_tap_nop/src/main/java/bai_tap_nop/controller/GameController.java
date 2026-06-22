@@ -1,59 +1,108 @@
 package bai_tap_nop.controller;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
 
-import javax.servlet.*;
-import javax.servlet.annotation.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import static bai_tap_nop.service.GameConstant.*;
-import static bai_tap_nop.service.GameMethod.*;
-import static java.lang.Integer.*;
+import bai_tap_nop.model.GameState;
+import bai_tap_nop.model.GameState.GuessResult;
+import bai_tap_nop.service.GameMethod;
 
+import static bai_tap_nop.service.GameConstant.MAX_NUMBER;
+import static bai_tap_nop.service.GameConstant.MIN_NUMBER;
+
+/**
+ * Điều khiển một ván đoán số. Mỗi HTTP session sở hữu một {@link GameState}
+ * riêng nên các người chơi đồng thời không thể làm thay đổi đáp án của nhau.
+ */
 @SuppressWarnings("serial")
 @WebServlet("/game")
 public class GameController extends HttpServlet {
-	// fields
-	private int mCounter = 0;
-	private int mX = new Random().nextInt(HI_VAL - LO_VAL) + LO_VAL;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		subReset();
-		req.getRequestDispatcher("game.jsp").forward(req, resp);
-	}
+    /** Chỉ cho phép mở trang khi người dùng đã đăng ký và có ván đang chạy. */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        GameState gameState = getGameState(req);
+        if (gameState == null) {
+            resp.sendRedirect(req.getContextPath() + "/index");
+            return;
+        }
+        if (gameState.isCompleted()) {
+            req.setAttribute("gameState", GuessResult.CORRECT.name());
+            req.setAttribute("botRep", GameMethod.answerMessage(GuessResult.CORRECT));
+        }
+        req.getRequestDispatcher("/game.jsp").forward(req, resp);
+    }
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
-		switch (req.getParameter("submit")) {
-		case "checkin":
-			var num = parseInt(req.getParameter("numGuess"));
-			checkGamePlay(num, mX);
-			if (check_state != "EXIST") {
-				mCounter++;
-				req.setAttribute("botRep", strAnswer(num, mX));
-			}
-			if (guess_num > -1) {
-				req.setAttribute("savedNum", guess_num);
-			}
-			req.getRequestDispatcher("game.jsp").forward(req, resp);
-			break;
-		case "checkout":
-			updateCurrentPlayer(mCounter);
-			selfReset();
-			playersRanking();
-			resp.sendRedirect("index.jsp");
-			break;
-		}
-	}
+    /** Xử lý một lần đoán hoặc ghi thành tích sau khi ván chơi kết thúc. */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        String action = req.getParameter("submit");
 
-	// reset game
-	private void selfReset() {
-		mCounter = 0;
-		mX = new Random().nextInt(HI_VAL - LO_VAL) + LO_VAL;
-		mainReset();
-		subReset();
-	}
+        if ("checkin".equals(action)) {
+            checkGuess(req, resp);
+            return;
+        }
+        if ("checkout".equals(action)) {
+            finishGame(req, resp);
+            return;
+        }
+        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Thao tác không hợp lệ.");
+    }
+
+    private void checkGuess(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        GameState gameState = getGameState(req);
+        if (gameState == null) {
+            resp.sendRedirect(req.getContextPath() + "/index");
+            return;
+        }
+        if (gameState.isCompleted()) {
+            req.setAttribute("gameState", GuessResult.CORRECT.name());
+            req.setAttribute("botRep", GameMethod.answerMessage(GuessResult.CORRECT));
+            req.getRequestDispatcher("/game.jsp").forward(req, resp);
+            return;
+        }
+
+        String rawGuess = req.getParameter("numGuess");
+        try {
+            int guess = Integer.parseInt(rawGuess);
+            if (guess < MIN_NUMBER || guess > MAX_NUMBER) {
+                throw new NumberFormatException("Ngoài phạm vi");
+            }
+
+            GuessResult result = gameState.guess(guess);
+            req.setAttribute("savedNum", guess);
+            req.setAttribute("botRep", GameMethod.answerMessage(result));
+            req.setAttribute("gameState", result.name());
+        } catch (NumberFormatException exception) {
+            req.setAttribute("inputError", "Vui lòng nhập số nguyên từ 1 đến 1000.");
+        }
+        req.getRequestDispatcher("/game.jsp").forward(req, resp);
+    }
+
+    private void finishGame(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+        GameState gameState = getGameState(req);
+        if (session == null || gameState == null || !gameState.isCompleted()) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Ván chơi chưa hoàn thành.");
+            return;
+        }
+
+        GameMethod.saveScore(gameState.getPlayerName(), gameState.getAttemptCount());
+        session.removeAttribute(IndexController.GAME_STATE);
+        resp.sendRedirect(req.getContextPath() + "/index");
+    }
+
+    private GameState getGameState(HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        Object state = session == null ? null : session.getAttribute(IndexController.GAME_STATE);
+        return state instanceof GameState ? (GameState) state : null;
+    }
 }

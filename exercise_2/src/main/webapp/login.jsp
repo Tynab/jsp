@@ -1,35 +1,35 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-	pageEncoding="utf-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%-- Trang đăng nhập cho tài khoản minh họa của bài tập. --%>
+<c:url var="loginUrl" value="/login"/>
+<c:url var="loginCssUrl" value="/css/login.css"/>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="./css/login.css">
-<title>Login</title>
-<script src="https://code.jquery.com/jquery-3.6.0.js"
-	integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-	crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="${loginCssUrl}">
+    <title>Đăng nhập</title>
 </head>
 <body>
-	<div class="login-box">
-		<h2>Login</h2>
-		<form action="" method="post" class="form">
-			<div class="user-box">
-				<input type="text" name="username" required=""> <label>Username</label>
-			</div>
-			<div class="user-box">
-				<input type="password" name="password" required=""> <label>Password</label>
-			</div>
-			<a href="javascript:$('form').submit()"> <span></span><span></span>
-				<span></span> <span></span> Submit
-			</a>
-		</form>
-	</div>
-	<c:if test="${not empty checkLogin}">
-		<script>
-			alert("Login Failed: Your user ID or password is incorrect");
-		</script>
-	</c:if>
+    <main class="login-box">
+        <h1>Đăng nhập</h1>
+        <form action="${loginUrl}" method="post" class="form">
+            <div class="user-box">
+                <input id="username" type="text" name="username"
+                       value="<c:out value="${savedUsername}"/>" autocomplete="username" required>
+                <label for="username">Tên đăng nhập</label>
+            </div>
+            <div class="user-box">
+                <input id="password" type="password" name="password"
+                       autocomplete="current-password" required>
+                <label for="password">Mật khẩu</label>
+            </div>
+            <c:if test="${not empty loginError}">
+                <p class="form-error" role="alert"><c:out value="${loginError}"/></p>
+            </c:if>
+            <button class="action-button" type="submit">Đăng nhập</button>
+        </form>
+    </main>
 </body>
 </html>

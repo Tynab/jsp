@@ -1,85 +1,93 @@
 @charset "UTF-8";
 
+/* Bố cục trang chơi, tập trung người dùng vào ô nhập số và phản hồi của game. */
 * {
-	margin: 0;
-	padding: 0;
-	font-family: 'poppins', sans-serif;
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-	height: 100vh;
-	background: linear-gradient(to right, #7f53ac, #657ced);
-	background-attachment: fixed;
-}
-
-.vertical-center {
-    min-height: 100%;
     min-height: 100vh;
-    align-items: center;
+    margin: 0;
+    font-family: Poppins, sans-serif;
+    background: linear-gradient(to right, #7f53ac, #657ced) fixed;
+}
+
+/* Căn thẻ game giữa màn hình và vẫn chừa khoảng thở trên thiết bị nhỏ. */
+.vertical-center {
+    min-height: 100vh;
     display: flex;
+    align-items: center;
+    padding: 24px 12px;
 }
 
-.container {
-	min-width: 580px;
-	border-radius: 5px;
-	padding-bottom: 3%;
-	background: white;
-	display: grid;
-	justify-items: center;
+.game-container {
+    width: min(100%, 580px) !important;
+    padding: 24px 20px 32px;
+    border-radius: 8px;
+    background: #fff;
+    display: grid;
+    justify-items: center;
 }
 
-.container img{
-	width: 20%;
+.game-container img {
+    width: min(120px, 25%);
 }
 
-.container h3 {
-	margin-top: -4%;
-	font-size: 30px;
-	font-weight: 500;
-	text-align: center;
-}
-
-.container p {
-	font-weight: 400;
-}
-
-.container form {
+.game-container h1 {
+    margin: 0;
+    font-size: clamp(1.4rem, 5vw, 1.9rem);
+    font-weight: 500;
     text-align: center;
 }
 
-.container input {
-	width: 90px;
-	margin-left: 15px;
-	margin-top: 30px;
-	border-radius: 5px;
-	border: 2px solid #202020;
-	padding: 20px;
-	font-size: 28px;
-	font-weight: bold;
-	text-align: center;
-	color: #663399;
-	-moz-appearance: textfield;
+.game-container form {
+    text-align: center;
 }
 
-.container input::-webkit-outer-spin-button, .container input::-webkit-inner-spin-button
-	{
-	-webkit-appearance: none;
+/* Loại bỏ nút tăng giảm để ô số gọn hơn, nhưng vẫn giữ kiểu input number. */
+.game-container input {
+    width: 120px;
+    margin: 28px auto 0;
+    border: 2px solid #202020;
+    border-radius: 5px;
+    padding: 12px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-align: center;
+    color: #663399;
+    -moz-appearance: textfield;
+}
+
+.game-container input::-webkit-outer-spin-button,
+.game-container input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .btn-set button {
-	width: 120px;
-	margin-top: 20px;
-	margin-bottom: 30px;
-	border: none;
-	border-radius: 5px;
-	padding: 10px;
-	font-size: large;
-	color: white;
-	background-color: #663399;
+    width: 120px;
+    margin: 20px 0;
+    border: 0;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.05rem;
+    color: #fff;
+    background: #663399;
 }
 
-.btn-set button:hover {
-	background-color: rgba(255, 102, 0, 0.7);
-	cursor: pointer;
+.btn-set button:hover,
+.btn-set button:focus-visible {
+    background: #c65300;
+    cursor: pointer;
+}
+
+.answer {
+    min-height: 24px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.form-error {
+    margin: 8px 0 0;
+    color: #b42318;
 }
